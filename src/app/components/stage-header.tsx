@@ -13,14 +13,14 @@ export function StageHeader({ title, subtitle }: StageHeaderProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <h1 
-        className="text-[52px] font-bold text-[#1A1A1A] mb-2"
-        style={{ letterSpacing: '-1px' }}
+      <h1
+        className="text-[52px] font-bold text-white/90 mb-2"
+        style={{ letterSpacing: "-1px" }}
       >
         {title}
       </h1>
       {subtitle && (
-        <p className="text-[17px] text-[#8A8A85]">
+        <p className="text-[17px] text-white/50">
           {subtitle}
         </p>
       )}

@@ -1,3 +1,82 @@
 @import './fonts.css';
 @import './tailwind.css';
 @import './theme.css';
+
+/* ─── Glassmorphism Utility Classes ─────────────────────────────────────── */
+
+/* Standard glass panel */
+.glass {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Elevated glass (more prominent panels) */
+.glass-elevated {
+  background: rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+/* Subtle glass (secondary surfaces) */
+.glass-subtle {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Teal glow */
+.glow-teal {
+  box-shadow: 0 0 24px rgba(0, 212, 170, 0.4), 0 0 48px rgba(0, 212, 170, 0.15);
+}
+
+.glow-teal-sm {
+  box-shadow: 0 0 12px rgba(0, 212, 170, 0.35), 0 4px 20px rgba(0, 212, 170, 0.2);
+}
+
+/* Coral glow */
+.glow-coral {
+  box-shadow: 0 0 16px rgba(255, 107, 107, 0.35), 0 4px 20px rgba(255, 107, 107, 0.15);
+}
+
+/* Amber glow */
+.glow-amber {
+  box-shadow: 0 0 16px rgba(255, 193, 7, 0.35), 0 4px 20px rgba(255, 193, 7, 0.15);
+}
+
+/* Card hover glass shadow */
+.glass-card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card-hover:hover {
+  background: rgba(255, 255, 255, 0.09);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+
+/* Scrollbar hide */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Glass input focus ring */
+.glass-input:focus-within {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(0, 212, 170, 0.5);
+  box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.12), 0 0 20px rgba(0, 212, 170, 0.1);
+}
+
+/* Gradient text */
+.gradient-text-teal {
+  background: linear-gradient(135deg, #00D4AA 0%, #00b894 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

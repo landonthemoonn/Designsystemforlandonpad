@@ -88,31 +88,35 @@ export function PlanView() {
     switch (status) {
       case "overdue":
         return {
-          bg: "bg-[#FF6B6B]/10",
+          bg: "",
           border: "border-[#FF6B6B]/30",
           text: "text-[#FF6B6B]",
           icon: AlertCircle,
+          style: { background: "rgba(255,107,107,0.08)" },
         };
       case "due-soon":
         return {
-          bg: "bg-[#FFC107]/10",
+          bg: "",
           border: "border-[#FFC107]/30",
           text: "text-[#FFC107]",
           icon: Clock,
+          style: { background: "rgba(255,193,7,0.07)" },
         };
       case "on-track":
         return {
-          bg: "bg-[#00D4AA]/10",
-          border: "border-[#00D4AA]/30",
+          bg: "",
+          border: "border-[#00D4AA]/25",
           text: "text-[#00D4AA]",
           icon: Calendar,
+          style: { background: "rgba(0,212,170,0.06)" },
         };
       case "completed":
         return {
-          bg: "bg-[#C8C6BD]/30",
-          border: "border-[#C8C6BD]",
-          text: "text-[#8A8A85]",
+          bg: "",
+          border: "border-white/8",
+          text: "text-white/35",
           icon: CheckCircle2,
+          style: { background: "rgba(255,255,255,0.03)" },
         };
     }
   };
@@ -125,14 +129,14 @@ export function PlanView() {
     <div className="space-y-8">
       {/* Progress Overview */}
       <motion.div
-        className="bg-white rounded-[20px] p-8"
+        className="glass-elevated rounded-[20px] p-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
       >
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="text-2xl font-bold text-[#1A1A1A]">Moving Progress</h3>
-            <p className="text-[#8A8A85]">
+            <h3 className="text-2xl font-bold text-white/90">Moving Progress</h3>
+            <p className="text-white/50">
               {completedCount} of {totalCount} tasks completed
             </p>
           </div>
@@ -142,9 +146,10 @@ export function PlanView() {
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full h-3 bg-[#E8E6DD] rounded-full overflow-hidden">
+        <div className="w-full h-3 bg-white/8 rounded-full overflow-hidden">
           <motion.div
             className="h-full bg-[#00D4AA]"
+            style={{ boxShadow: "0 0 10px rgba(0,212,170,0.5)" }}
             initial={{ width: 0 }}
             animate={{ width: `${progressPercentage}%` }}
             transition={{ duration: 0.8, ease: "easeOut" }}
@@ -156,26 +161,26 @@ export function PlanView() {
             <div className="text-2xl font-bold text-[#FF6B6B]">
               {tasks.filter((t) => t.status === "overdue").length}
             </div>
-            <div className="text-sm text-[#8A8A85]">Overdue</div>
+            <div className="text-sm text-white/45">Overdue</div>
           </div>
           <div>
             <div className="text-2xl font-bold text-[#FFC107]">
               {tasks.filter((t) => t.status === "due-soon").length}
             </div>
-            <div className="text-sm text-[#8A8A85]">Due Soon</div>
+            <div className="text-sm text-white/45">Due Soon</div>
           </div>
           <div>
             <div className="text-2xl font-bold text-[#00D4AA]">
               {tasks.filter((t) => t.status === "on-track").length}
             </div>
-            <div className="text-sm text-[#8A8A85]">On Track</div>
+            <div className="text-sm text-white/45">On Track</div>
           </div>
         </div>
       </motion.div>
 
       {/* Timeline */}
       <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-[#1A1A1A]">Your Timeline</h3>
+        <h3 className="text-xl font-semibold text-white/90">Your Timeline</h3>
         {tasks.map((task, index) => {
           const statusStyle = getStatusColor(task.status);
           const StatusIcon = statusStyle.icon;
@@ -183,7 +188,8 @@ export function PlanView() {
           return (
             <motion.div
               key={task.id}
-              className={`bg-white rounded-[20px] p-6 border-2 ${statusStyle.border} ${statusStyle.bg} transition-all hover:shadow-md`}
+              className={`rounded-[20px] p-6 border ${statusStyle.border} transition-all`}
+              style={statusStyle.style}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.05 }}
@@ -197,7 +203,7 @@ export function PlanView() {
                   {task.status === "completed" ? (
                     <CheckCircle2 className="w-6 h-6 text-[#00D4AA]" />
                   ) : (
-                    <Circle className="w-6 h-6 text-[#D0CEC5] hover:text-[#00D4AA] transition-colors" />
+                    <Circle className="w-6 h-6 text-white/25 hover:text-[#00D4AA] transition-colors" />
                   )}
                 </button>
 
@@ -208,25 +214,25 @@ export function PlanView() {
                       <h4
                         className={`text-base font-semibold ${
                           task.status === "completed"
-                            ? "text-[#8A8A85] line-through"
-                            : "text-[#1A1A1A]"
+                            ? "text-white/35 line-through"
+                            : "text-white/90"
                         }`}
                       >
                         {task.title}
                       </h4>
                       {task.description && (
-                        <p className="text-sm text-[#8A8A85] mt-1">{task.description}</p>
+                        <p className="text-sm text-white/50 mt-1">{task.description}</p>
                       )}
                     </div>
                     <StatusIcon className={`w-5 h-5 ${statusStyle.text} flex-shrink-0 ml-4`} />
                   </div>
 
                   <div className="flex items-center gap-4 mt-3">
-                    <div className="flex items-center gap-1.5 text-sm text-[#8A8A85]">
+                    <div className="flex items-center gap-1.5 text-sm text-white/45">
                       <Calendar className="w-4 h-4" />
                       <span>{task.dueDate}</span>
                     </div>
-                    <div className="px-3 py-1 bg-[#F2F0E8] rounded-full text-xs font-medium text-[#1A1A1A]">
+                    <div className="px-3 py-1 glass-subtle rounded-full text-xs font-medium text-white/70">
                       {task.category}
                     </div>
                   </div>
@@ -239,7 +245,8 @@ export function PlanView() {
 
       {/* AI Suggestions */}
       <motion.div
-        className="bg-[#F2F0E8] rounded-[20px] p-6"
+        className="glass rounded-[20px] p-6"
+        style={{ background: "rgba(0,212,170,0.05)", borderColor: "rgba(0,212,170,0.15)" }}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
@@ -247,26 +254,26 @@ export function PlanView() {
         <div className="flex items-start gap-3">
           <div className="text-2xl">🤖</div>
           <div>
-            <h4 className="font-semibold text-[#1A1A1A] mb-2">AI Task Suggestions</h4>
-            <ul className="space-y-2 text-sm text-[#1A1A1A]">
+            <h4 className="font-semibold text-white/90 mb-2">AI Task Suggestions</h4>
+            <ul className="space-y-2 text-sm text-white/70">
               <li className="flex items-start gap-2">
                 <span className="text-[#00D4AA] mt-0.5">→</span>
                 <span>
-                  <strong>Consider:</strong> Scheduling your move-out cleaning 2 days before your
+                  <strong className="text-white/85">Consider:</strong> Scheduling your move-out cleaning 2 days before your
                   lease ends to avoid last-minute stress.
                 </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[#00D4AA] mt-0.5">→</span>
                 <span>
-                  <strong>Pro tip:</strong> Take photos/videos of your new place before moving in
+                  <strong className="text-white/85">Pro tip:</strong> Take photos/videos of your new place before moving in
                   for security deposit protection.
                 </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[#00D4AA] mt-0.5">→</span>
                 <span>
-                  <strong>Reminder:</strong> Your building requires 48-hour notice for elevator
+                  <strong className="text-white/85">Reminder:</strong> Your building requires 48-hour notice for elevator
                   reservation on move-in day.
                 </span>
               </li>

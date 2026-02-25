@@ -53,17 +53,17 @@ export function ListingCard({
 
   return (
     <motion.div
-      className="bg-[#C8C6BD] rounded-[20px] overflow-hidden cursor-pointer"
+      className="glass rounded-[20px] overflow-hidden cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={() => onClick?.(id)}
       whileHover={{
         y: -6,
-        boxShadow: "0 8px 24px rgba(26, 26, 26, 0.12)",
+        boxShadow: "0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.18)",
       }}
       transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
       style={{
-        boxShadow: "0 2px 12px rgba(26, 26, 26, 0.06)",
+        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
       }}
     >
       {/* Image Area */}
@@ -71,7 +71,7 @@ export function ListingCard({
         {imageUrl ? (
           <img src={imageUrl} alt={address} className="w-full h-full object-cover" />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-[#D8D6CD] to-[#C8C6BD]" />
+          <div className="w-full h-full bg-gradient-to-br from-[#0d1b3e] to-[#150d2e]" />
         )}
 
         {/* Badge */}
@@ -88,7 +88,7 @@ export function ListingCard({
         {/* Save Button */}
         <motion.button
           onClick={handleSave}
-          className="absolute top-4 right-4 w-[38px] h-[38px] rounded-full bg-white/95 flex items-center justify-center"
+          className="absolute top-4 right-4 w-[38px] h-[38px] rounded-full glass flex items-center justify-center"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -97,7 +97,7 @@ export function ListingCard({
             transition={{ duration: 0.2 }}
           >
             <Heart
-              className={`w-5 h-5 ${isSaved ? "fill-[#FF6B6B] stroke-[#FF6B6B]" : "stroke-[#1A1A1A]"}`}
+              className={`w-5 h-5 ${isSaved ? "fill-[#FF6B6B] stroke-[#FF6B6B]" : "stroke-white/80"}`}
             />
           </motion.div>
         </motion.button>
@@ -105,20 +105,20 @@ export function ListingCard({
 
       {/* Content */}
       <div className="p-[22px]">
-        <div className="text-[30px] font-bold text-[#1A1A1A] mb-1.5" style={{ letterSpacing: '-0.5px' }}>
+        <div className="text-[30px] font-bold text-white/90 mb-1.5" style={{ letterSpacing: '-0.5px' }}>
           ${price.toLocaleString()}
         </div>
-        
-        <div className="text-base font-medium text-[#1A1A1A] mb-1">
+
+        <div className="text-base font-medium text-white/80 mb-1">
           {address}
         </div>
-        
-        <div className="text-sm text-[#8A8A85] mb-4">
+
+        <div className="text-sm text-white/50 mb-4">
           {neighborhood}
         </div>
 
         {/* Specs */}
-        <div className="flex items-center gap-4 text-sm text-[#1A1A1A] mb-4">
+        <div className="flex items-center gap-4 text-sm text-white/70 mb-4">
           <div className="flex items-center gap-1.5">
             <Bed className="w-4 h-4" />
             <span>{beds} beds</span>
@@ -136,12 +136,12 @@ export function ListingCard({
         {/* AI Insight */}
         {aiInsight && (
           <motion.div
-            className="bg-[#F2F0E8] rounded-xl p-3"
+            className="glass-subtle rounded-xl p-3"
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <div className="text-[13px] text-[#1A1A1A] leading-relaxed">
+            <div className="text-[13px] text-white/75 leading-relaxed">
               💡 {aiInsight}
             </div>
           </motion.div>

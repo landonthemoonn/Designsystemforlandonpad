@@ -13,8 +13,8 @@ export function FilterPill({ label, active = false, onClick }: FilterPillProps) 
       onClick={onClick}
       className={`px-[18px] py-[9px] rounded-[20px] text-sm font-medium transition-all whitespace-nowrap ${
         active
-          ? "bg-[#1A1A1A] text-white"
-          : "bg-white text-[#1A1A1A] border-[1.5px] border-[#D0CEC5] hover:bg-[#F2F0E8]"
+          ? "bg-[#00D4AA] text-[#050d1f] glow-teal-sm"
+          : "glass text-white/75 hover:text-white/90"
       }`}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.97 }}
@@ -33,15 +33,6 @@ interface FilterPillsProps {
 export function FilterPills({ filters, activeFilters = [], onFilterToggle }: FilterPillsProps) {
   return (
     <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-      <style>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
       {filters.map((filter) => (
         <FilterPill
           key={filter}
