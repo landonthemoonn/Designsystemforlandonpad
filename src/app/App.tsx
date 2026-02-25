@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { CurvedNavigation } from "./components/curved-navigation";
 import { StageHeader } from "./components/stage-header";
 import { AIInput } from "./components/ai-input";
@@ -10,6 +11,15 @@ import { DecideView } from "./components/decide-view";
 import { PlanView } from "./components/plan-view";
 import { SecureView } from "./components/secure-view";
 import { SettleView } from "./components/settle-view";
+
+const mobileStages = [
+  { emoji: "🔍", id: "scout",   label: "Scout"   },
+  { emoji: "⚖️", id: "compare", label: "Compare" },
+  { emoji: "✨", id: "decide",  label: "Decide"  },
+  { emoji: "🔐", id: "secure",  label: "Secure"  },
+  { emoji: "📋", id: "plan",    label: "Plan"    },
+  { emoji: "🏡", id: "settle",  label: "Settle"  },
+];
 
 // Mock apartment listings data
 const mockListings = [
@@ -150,10 +160,46 @@ export default function App() {
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    console.log("Searching for:", query);
   };
 
   const savedApartments = mockListings.filter((listing) => savedListings.includes(listing.id));
+
+  // ── Real filter + search logic ──────────────────────────────────────────
+  const filteredListings = useMemo(() => {
+    let results = mockListings;
+
+    if (!activeFilters.includes("All Listings")) {
+      results = results.filter((l) =>
+        activeFilters.every((f) => {
+          switch (f) {
+            case "Under $3000":     return l.price < 3000;
+            case "Pet Friendly":    return l.petFriendly;
+            case "In-Unit Laundry": return l.hasLaundry;
+            case "Near Transit":    return l.nearTransit;
+            case "Recently Listed": return l.badge?.text === "Just Listed";
+            case "Move-in Ready": {
+              const d = new Date(l.availableDate);
+              const diffDays = (d.getTime() - Date.now()) / 86_400_000;
+              return diffDays <= 45;
+            }
+            default: return true;
+          }
+        })
+      );
+    }
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      results = results.filter(
+        (l) =>
+          l.address.toLowerCase().includes(q) ||
+          l.neighborhood.toLowerCase().includes(q) ||
+          l.aiInsight?.toLowerCase().includes(q)
+      );
+    }
+
+    return results;
+  }, [activeFilters, searchQuery]);
 
   const stageConfig = {
     scout: {
@@ -219,40 +265,74 @@ export default function App() {
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12 lg:pr-32 pt-12">
         <StageHeader title={currentStage.title} subtitle={currentStage.subtitle} />
 
-        {/* Scout Stage */}
-        {activeStage === "scout" && (
-          <>
-            <div className="mb-8">
-              <AIInput onSearch={handleSearch} />
-            </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeStage}
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -18 }}
+            transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
+          >
+            {/* Scout Stage */}
+            {activeStage === "scout" && (
+              <>
+                <div className="mb-8">
+                  <AIInput onSearch={handleSearch} />
+                </div>
 
-            <div className="mb-10">
-              <FilterPills
-                filters={filterOptions}
-                activeFilters={activeFilters}
-                onFilterToggle={handleFilterToggle}
-              />
-            </div>
+                <div className="mb-10">
+                  <FilterPills
+                    filters={filterOptions}
+                    activeFilters={activeFilters}
+                    onFilterToggle={handleFilterToggle}
+                  />
+                </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-              {mockListings.map((listing) => (
-                <ListingCard
-                  key={listing.id}
-                  {...listing}
-                  saved={savedListings.includes(listing.id)}
-                  onSave={handleSave}
-                  onClick={(id) => console.log("Clicked listing:", id)}
-                />
-              ))}
-            </div>
-          </>
-        )}
+                {filteredListings.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {filteredListings.map((listing) => (
+                      <ListingCard
+                        key={listing.id}
+                        {...listing}
+                        saved={savedListings.includes(listing.id)}
+                        onSave={handleSave}
+                        onClick={(id) => console.log("Clicked listing:", id)}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <motion.div
+                    className="glass rounded-[20px] p-12 text-center"
+                    initial={{ opacity: 0, scale: 0.97 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <div className="text-5xl mb-4">🔍</div>
+                    <h3 className="text-xl font-semibold text-white/85 mb-2">No listings match</h3>
+                    <p className="text-white/50 mb-6">
+                      Try adjusting your filters or search query.
+                    </p>
+                    <button
+                      onClick={() => {
+                        setActiveFilters(["All Listings"]);
+                        setSearchQuery("");
+                      }}
+                      className="bg-[#00D4AA] text-[#050d1f] px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-[#00c49a] transition-colors"
+                    >
+                      Clear filters
+                    </button>
+                  </motion.div>
+                )}
+              </>
+            )}
 
-        {activeStage === "compare" && <CompareView apartments={savedApartments} />}
-        {activeStage === "decide" && <DecideView apartments={savedApartments} />}
-        {activeStage === "plan" && <PlanView />}
-        {activeStage === "secure" && <SecureView />}
-        {activeStage === "settle" && <SettleView />}
+            {activeStage === "compare" && <CompareView apartments={savedApartments} />}
+            {activeStage === "decide" && <DecideView apartments={savedApartments} />}
+            {activeStage === "plan" && <PlanView />}
+            {activeStage === "secure" && <SecureView />}
+            {activeStage === "settle" && <SettleView />}
+          </motion.div>
+        </AnimatePresence>
       </div>
 
       {/* Floating Action Button — Scout */}
@@ -275,20 +355,40 @@ export default function App() {
       )}
 
       {/* Mobile Bottom Navigation */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 glass border-t border-white/10">
-        <div className="flex items-center justify-around py-3 px-4">
-          {["🔍", "⚖️", "✨", "🔐", "📋", "🏡"].map((emoji, index) => {
-            const stages = ["scout", "compare", "decide", "secure", "plan", "settle"];
-            const isActive = activeStage === stages[index];
+      <div
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-40 glass border-t border-white/10"
+        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      >
+        <div className="flex items-center justify-around px-2 pt-2 pb-1">
+          {mobileStages.map((stage) => {
+            const isActive = activeStage === stage.id;
             return (
               <button
-                key={index}
-                onClick={() => setActiveStage(stages[index])}
-                className={`flex items-center justify-center w-12 h-12 rounded-full transition-all ${
-                  isActive ? "bg-[#00D4AA] glow-teal-sm scale-110" : "bg-white/5"
+                key={stage.id}
+                onClick={() => setActiveStage(stage.id)}
+                className={`relative flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-xl transition-all duration-200 ${
+                  isActive ? "text-[#00D4AA]" : "text-white/40"
                 }`}
               >
-                <span className="text-xl">{emoji}</span>
+                {/* Active dot indicator */}
+                {isActive && (
+                  <motion.div
+                    layoutId="mobile-nav-indicator"
+                    className="absolute inset-0 rounded-xl"
+                    style={{ background: "rgba(0,212,170,0.1)" }}
+                    transition={{ duration: 0.2 }}
+                  />
+                )}
+                <span
+                  className={`relative text-[18px] transition-transform duration-200 ${
+                    isActive ? "scale-110" : "scale-100"
+                  }`}
+                >
+                  {stage.emoji}
+                </span>
+                <span className="relative text-[10px] font-medium leading-none">
+                  {stage.label}
+                </span>
               </button>
             );
           })}

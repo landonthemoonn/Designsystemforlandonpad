@@ -29,10 +29,14 @@ const applicationSteps = [
 
 export function SecureView() {
   const [docs, setDocs] = useState(initialDocs);
+  const [fileNames, setFileNames] = useState<Record<string, string>>({});
 
-  const toggleDoc = (id: string) => {
+  const handleFileChange = (docId: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const name = e.target.files?.[0]?.name;
+    if (!name) return;
+    setFileNames((prev) => ({ ...prev, [docId]: name }));
     setDocs((prev) =>
-      prev.map((d) => (d.id === id ? { ...d, uploaded: !d.uploaded } : d))
+      prev.map((d) => (d.id === docId ? { ...d, uploaded: true } : d))
     );
   };
 
@@ -95,10 +99,8 @@ export function SecureView() {
           {docs.map((doc, index) => (
             <motion.div
               key={doc.id}
-              className={`rounded-[16px] p-5 border transition-all cursor-pointer ${
-                doc.uploaded
-                  ? "border-[#00D4AA]/25"
-                  : "border-white/10"
+              className={`rounded-[16px] p-5 border transition-all ${
+                doc.uploaded ? "border-[#00D4AA]/25" : "border-white/10"
               }`}
               style={{
                 background: doc.uploaded ? "rgba(0,212,170,0.06)" : "rgba(255,255,255,0.04)",
@@ -106,39 +108,44 @@ export function SecureView() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
-              onClick={() => toggleDoc(doc.id)}
             >
               <div className="flex items-center gap-4">
-                <button className="flex-shrink-0">
+                <div className="flex-shrink-0">
                   {doc.uploaded ? (
                     <CheckCircle2 className="w-6 h-6 text-[#00D4AA]" />
                   ) : (
-                    <Circle className="w-6 h-6 text-white/25 hover:text-white/50 transition-colors" />
+                    <Circle className="w-6 h-6 text-white/25" />
                   )}
-                </button>
+                </div>
 
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5">
                     <span className={`text-sm font-semibold ${doc.uploaded ? "text-white/90" : "text-white/75"}`}>
                       {doc.label}
                     </span>
                     {doc.required && (
-                      <span className="text-[10px] px-2 py-0.5 rounded-full font-medium" style={{ background: "rgba(255,107,107,0.15)", color: "#FF6B6B" }}>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-medium flex-shrink-0" style={{ background: "rgba(255,107,107,0.15)", color: "#FF6B6B" }}>
                         Required
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-white/45">{doc.description}</p>
+                  <p className="text-xs text-white/45 truncate">
+                    {fileNames[doc.id] ? fileNames[doc.id] : doc.description}
+                  </p>
                 </div>
 
-                <motion.div
-                  className="flex-shrink-0 glass rounded-xl px-3 py-2 flex items-center gap-2 cursor-pointer hover:bg-white/10 transition-colors"
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                >
+                <label className="flex-shrink-0 glass rounded-xl px-3 py-2 flex items-center gap-1.5 cursor-pointer hover:bg-white/10 transition-colors">
                   <Upload className="w-3.5 h-3.5 text-white/50" />
-                  <span className="text-xs text-white/60">Upload</span>
-                </motion.div>
+                  <span className="text-xs text-white/60 max-w-[72px] truncate">
+                    {fileNames[doc.id] ? "Replace" : "Upload"}
+                  </span>
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                    onChange={(e) => handleFileChange(doc.id, e)}
+                  />
+                </label>
               </div>
             </motion.div>
           ))}
