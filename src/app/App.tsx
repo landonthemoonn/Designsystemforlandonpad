@@ -8,6 +8,8 @@ import { FloatingActionButton } from "./components/floating-action-button";
 import { CompareView } from "./components/compare-view";
 import { DecideView } from "./components/decide-view";
 import { PlanView } from "./components/plan-view";
+import { SecureView } from "./components/secure-view";
+import { SettleView } from "./components/settle-view";
 
 // Mock apartment listings data
 const mockListings = [
@@ -148,14 +150,11 @@ export default function App() {
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    // In a real app, this would trigger an API call
     console.log("Searching for:", query);
   };
 
-  // Get saved apartments for comparison
   const savedApartments = mockListings.filter((listing) => savedListings.includes(listing.id));
 
-  // Stage configuration
   const stageConfig = {
     scout: {
       title: "Scout",
@@ -186,7 +185,33 @@ export default function App() {
   const currentStage = stageConfig[activeStage as keyof typeof stageConfig] || stageConfig.scout;
 
   return (
-    <div className="min-h-screen bg-[#E8E6DD] pb-24">
+    <div className="relative min-h-screen pb-24 overflow-x-hidden">
+      {/* ── Glassmorphism Background ── */}
+      <div
+        className="fixed inset-0 -z-10"
+        style={{
+          background: "linear-gradient(135deg, #050d1f 0%, #0d1b3e 35%, #150d2e 65%, #0a0f24 100%)",
+        }}
+      >
+        {/* Ambient glow orbs */}
+        <div
+          className="absolute top-[-200px] left-[-100px] w-[700px] h-[700px] rounded-full pointer-events-none"
+          style={{ background: "radial-gradient(circle, rgba(0,212,170,0.08) 0%, transparent 70%)" }}
+        />
+        <div
+          className="absolute top-[25%] right-[-200px] w-[600px] h-[600px] rounded-full pointer-events-none"
+          style={{ background: "radial-gradient(circle, rgba(120,80,255,0.07) 0%, transparent 70%)" }}
+        />
+        <div
+          className="absolute bottom-[-150px] left-[25%] w-[500px] h-[500px] rounded-full pointer-events-none"
+          style={{ background: "radial-gradient(circle, rgba(0,212,170,0.06) 0%, transparent 70%)" }}
+        />
+        <div
+          className="absolute top-[60%] left-[-50px] w-[400px] h-[400px] rounded-full pointer-events-none"
+          style={{ background: "radial-gradient(circle, rgba(255,107,107,0.04) 0%, transparent 70%)" }}
+        />
+      </div>
+
       {/* Curved Navigation */}
       <CurvedNavigation activeStage={activeStage} onStageChange={setActiveStage} />
 
@@ -197,12 +222,10 @@ export default function App() {
         {/* Scout Stage */}
         {activeStage === "scout" && (
           <>
-            {/* AI Input */}
             <div className="mb-8">
               <AIInput onSearch={handleSearch} />
             </div>
 
-            {/* Filter Pills */}
             <div className="mb-10">
               <FilterPills
                 filters={filterOptions}
@@ -211,7 +234,6 @@ export default function App() {
               />
             </div>
 
-            {/* Listings Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
               {mockListings.map((listing) => (
                 <ListingCard
@@ -226,52 +248,34 @@ export default function App() {
           </>
         )}
 
-        {/* Compare Stage */}
         {activeStage === "compare" && <CompareView apartments={savedApartments} />}
-
-        {/* Decide Stage */}
         {activeStage === "decide" && <DecideView apartments={savedApartments} />}
-
-        {/* Plan Stage */}
         {activeStage === "plan" && <PlanView />}
-
-        {/* Placeholder for other stages */}
-        {["secure", "settle"].includes(activeStage) && (
-          <div className="text-center py-20">
-            <div className="text-6xl mb-4">
-              {activeStage === "secure" ? "🔐" : "🏡"}
-            </div>
-            <h3 className="text-xl font-semibold text-[#1A1A1A] mb-2">Coming Soon</h3>
-            <p className="text-[#8A8A85]">This stage is under development</p>
-          </div>
-        )}
+        {activeStage === "secure" && <SecureView />}
+        {activeStage === "settle" && <SettleView />}
       </div>
 
-      {/* Floating Action Button - only show on Scout stage */}
+      {/* Floating Action Button — Scout */}
       {activeStage === "scout" && (
         <FloatingActionButton
           label="Compare Saved"
           count={savedListings.length}
           show={savedListings.length > 0}
-          onClick={() => {
-            setActiveStage("compare");
-          }}
+          onClick={() => setActiveStage("compare")}
         />
       )}
 
-      {/* Floating Action Button for Compare stage */}
+      {/* Floating Action Button — Compare */}
       {activeStage === "compare" && savedApartments.length >= 1 && (
         <FloatingActionButton
           label="Help Me Decide"
           show={true}
-          onClick={() => {
-            setActiveStage("decide");
-          }}
+          onClick={() => setActiveStage("decide")}
         />
       )}
 
       {/* Mobile Bottom Navigation */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-[#D0CEC5] z-40">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 glass border-t border-white/10">
         <div className="flex items-center justify-around py-3 px-4">
           {["🔍", "⚖️", "✨", "🔐", "📋", "🏡"].map((emoji, index) => {
             const stages = ["scout", "compare", "decide", "secure", "plan", "settle"];
@@ -281,7 +285,7 @@ export default function App() {
                 key={index}
                 onClick={() => setActiveStage(stages[index])}
                 className={`flex items-center justify-center w-12 h-12 rounded-full transition-all ${
-                  isActive ? "bg-[#00D4AA] scale-110" : "bg-transparent"
+                  isActive ? "bg-[#00D4AA] glow-teal-sm scale-110" : "bg-white/5"
                 }`}
               >
                 <span className="text-xl">{emoji}</span>

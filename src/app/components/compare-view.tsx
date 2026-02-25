@@ -32,8 +32,8 @@ const ComparisonRow = ({
   highlight?: number[];
 }) => {
   return (
-    <div className="grid grid-cols-3 gap-4 py-4 border-b border-[#D0CEC5]">
-      <div className="flex items-center gap-2 text-[#8A8A85]">
+    <div className="grid grid-cols-3 gap-4 py-4 border-b border-white/8">
+      <div className="flex items-center gap-2 text-white/50">
         <Icon className="w-4 h-4" />
         <span className="text-sm font-medium">{label}</span>
       </div>
@@ -41,14 +41,14 @@ const ComparisonRow = ({
         <div
           key={index}
           className={`text-sm font-medium ${
-            highlight?.includes(index) ? "text-[#00D4AA]" : "text-[#1A1A1A]"
+            highlight?.includes(index) ? "text-[#00D4AA]" : "text-white/85"
           }`}
         >
           {typeof value === "boolean" ? (
             value ? (
               <Check className="w-5 h-5 text-[#00D4AA]" />
             ) : (
-              <X className="w-5 h-5 text-[#8A8A85]" />
+              <X className="w-5 h-5 text-white/30" />
             )
           ) : (
             value
@@ -66,8 +66,8 @@ export function CompareView({ apartments }: CompareViewProps) {
     return (
       <div className="text-center py-20">
         <div className="text-6xl mb-4">⚖️</div>
-        <h3 className="text-xl font-semibold text-[#1A1A1A] mb-2">No apartments to compare</h3>
-        <p className="text-[#8A8A85]">Save at least 2 apartments to see a side-by-side comparison</p>
+        <h3 className="text-xl font-semibold text-white/90 mb-2">No apartments to compare</h3>
+        <p className="text-white/50">Save at least 2 apartments to see a side-by-side comparison</p>
       </div>
     );
   }
@@ -79,7 +79,7 @@ export function CompareView({ apartments }: CompareViewProps) {
         {firstTwo.map((apt, index) => (
           <motion.div
             key={apt.id}
-            className="bg-[#C8C6BD] rounded-[20px] overflow-hidden"
+            className="glass rounded-[20px] overflow-hidden"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
@@ -88,15 +88,15 @@ export function CompareView({ apartments }: CompareViewProps) {
               {apt.imageUrl ? (
                 <img src={apt.imageUrl} alt={apt.address} className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-[#D8D6CD] to-[#C8C6BD]" />
+                <div className="w-full h-full bg-gradient-to-br from-[#0d1b3e] to-[#150d2e]" />
               )}
             </div>
             <div className="p-6">
-              <div className="text-3xl font-bold text-[#1A1A1A] mb-2">
+              <div className="text-3xl font-bold text-white/90 mb-2">
                 ${apt.price.toLocaleString()}
               </div>
-              <div className="text-base font-medium text-[#1A1A1A]">{apt.address}</div>
-              <div className="text-sm text-[#8A8A85]">{apt.neighborhood}</div>
+              <div className="text-base font-medium text-white/80">{apt.address}</div>
+              <div className="text-sm text-white/50">{apt.neighborhood}</div>
             </div>
           </motion.div>
         ))}
@@ -104,12 +104,12 @@ export function CompareView({ apartments }: CompareViewProps) {
 
       {/* Comparison Table */}
       <motion.div
-        className="bg-white rounded-[20px] p-6 shadow-sm"
+        className="glass-elevated rounded-[20px] p-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
       >
-        <h3 className="text-xl font-semibold text-[#1A1A1A] mb-6">Side-by-Side Comparison</h3>
+        <h3 className="text-xl font-semibold text-white/90 mb-6">Side-by-Side Comparison</h3>
 
         <div className="space-y-0">
           <ComparisonRow
@@ -164,7 +164,8 @@ export function CompareView({ apartments }: CompareViewProps) {
 
       {/* AI Insights */}
       <motion.div
-        className="bg-[#F2F0E8] rounded-[20px] p-6"
+        className="glass rounded-[20px] p-6"
+        style={{ borderColor: "rgba(0,212,170,0.2)", background: "rgba(0,212,170,0.05)" }}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
@@ -172,11 +173,11 @@ export function CompareView({ apartments }: CompareViewProps) {
         <div className="flex items-start gap-3">
           <div className="text-2xl">💡</div>
           <div>
-            <h4 className="font-semibold text-[#1A1A1A] mb-2">AI Decision Assistant</h4>
-            <p className="text-[#1A1A1A] leading-relaxed">
-              Based on your preferences, <strong>{firstTwo[0].address}</strong> offers better value per
+            <h4 className="font-semibold text-white/90 mb-2">AI Decision Assistant</h4>
+            <p className="text-white/70 leading-relaxed">
+              Based on your preferences, <strong className="text-white/90">{firstTwo[0].address}</strong> offers better value per
               square foot and matches your transit requirements. However,{" "}
-              <strong>{firstTwo[1]?.address || "the second option"}</strong> has more space and
+              <strong className="text-white/90">{firstTwo[1]?.address || "the second option"}</strong> has more space and
               in-unit amenities that could save you time weekly.
             </p>
           </div>

@@ -35,14 +35,16 @@ export function AIInput({ onSearch, placeholder = "Tell me what you're looking f
     <div className="w-full">
       <form onSubmit={handleSubmit}>
         <div
-          className={`bg-white rounded-[20px] border transition-all duration-300 ${
-            isFocused
-              ? "border-[#00D4AA] shadow-[0_4px_16px_rgba(0,212,170,0.15)]"
-              : "border-[#D0CEC5]"
+          className={`glass rounded-[20px] transition-all duration-300 glass-input ${
+            isFocused ? "border-[#00D4AA]/50" : ""
           }`}
         >
           <div className="flex items-center gap-3 px-5 py-[18px]">
-            <Sparkles className={`w-5 h-5 flex-shrink-0 transition-colors ${isFocused ? 'text-[#00D4AA]' : 'text-[#8A8A85]'}`} />
+            <Sparkles
+              className={`w-5 h-5 flex-shrink-0 transition-colors ${
+                isFocused ? "text-[#00D4AA]" : "text-white/40"
+              }`}
+            />
             <input
               type="text"
               value={query}
@@ -50,8 +52,8 @@ export function AIInput({ onSearch, placeholder = "Tell me what you're looking f
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
               placeholder={placeholder}
-              className="flex-1 bg-transparent outline-none text-[#1A1A1A] placeholder:text-[#8A8A85]"
-              style={{ fontSize: '16px' }}
+              className="flex-1 bg-transparent outline-none text-white/90 placeholder:text-white/35"
+              style={{ fontSize: "16px" }}
             />
           </div>
         </div>
@@ -63,8 +65,8 @@ export function AIInput({ onSearch, placeholder = "Tell me what you're looking f
           <motion.button
             key={index}
             onClick={() => handleChipClick(chip)}
-            className="bg-[#F2F0E8] hover:bg-[#E8E6DD] rounded-2xl px-[14px] py-[7px] text-sm font-medium text-[#1A1A1A] transition-colors"
-            whileHover={{ y: -1 }}
+            className="glass-subtle rounded-2xl px-[14px] py-[7px] text-sm font-medium text-white/75 hover:text-white/90 transition-colors"
+            whileHover={{ y: -1, scale: 1.02 }}
             whileTap={{ scale: 0.97 }}
           >
             {chip}
